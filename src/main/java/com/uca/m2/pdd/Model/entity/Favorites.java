@@ -1,4 +1,4 @@
-package com.uca.m2.pdd.Model;
+package com.uca.m2.pdd.Model.entity;
 
 import com.uca.m2.pdd.Configuration.FavoritesId;
 import jakarta.persistence.*;
