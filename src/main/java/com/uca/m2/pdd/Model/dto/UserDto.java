@@ -5,8 +5,16 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.UUID;
+
+@Getter
+@Setter
 public class UserDto {
+    private UUID id;
+
     @NotNull
     @Size(min= FieldUtils.DEFAULT_STRING_MIN_SIZE, max=FieldUtils.DEFAULT_STRING_MAX_SIZE)
     private String username;
@@ -14,7 +22,7 @@ public class UserDto {
     @NotNull
     @Size(min= FieldUtils.DEFAULT_STRING_MIN_SIZE, max=FieldUtils.DEFAULT_STRING_MAX_SIZE)
     //TODO: Add password hashing
-    @Pattern(regexp = FieldUtils.REGEx_PASSWORD_VALIDATION, message = FieldUtils.ERROR_MESSAGE_PASSWORD_VALIDATION)
+    @Pattern(regexp = FieldUtils.REGEX_PASSWORD_VALIDATION, message = FieldUtils.ERROR_MESSAGE_PASSWORD_VALIDATION)
     private String password;
 
     @NotNull
