@@ -11,7 +11,8 @@ import java.util.UUID;
 @Getter
 @Setter
 public class FavoritesDto {
-    private UUID id;
+    private UUID userId;
+    private UUID annonceId;
 
     @NotNull
     @Pattern(regexp = FieldUtils.REGEX_DATE_VALIDATION, message = FieldUtils.ERROR_MESSAGE_DATE_VALIDATION)

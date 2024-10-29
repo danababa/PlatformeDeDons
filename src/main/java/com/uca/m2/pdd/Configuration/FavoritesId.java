@@ -5,6 +5,8 @@ import java.util.Objects;
 import java.util.UUID;
 
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Method to create a composite key for the Favorites table
@@ -12,7 +14,9 @@ import jakarta.persistence.Embeddable;
  * using the user's id and the ad's id at the same time
  */
 @Embeddable
+
 public class FavoritesId implements Serializable {
+
 
     private UUID userId;
     private UUID annoncesId;
@@ -23,6 +27,19 @@ public class FavoritesId implements Serializable {
         this.annoncesId = annoncesId;
     }
 
+    // Getters and Setters
+    public UUID getUserId() {
+        return userId;
+    }
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+    public UUID getAnnoncesId() {
+        return annoncesId;
+    }
+    public void setAnnoncesId(UUID annoncesId) {
+        this.annoncesId = annoncesId;
+    }
     public FavoritesId() {
     }
 
@@ -40,5 +57,6 @@ public class FavoritesId implements Serializable {
     public int hashCode() {
         return Objects.hash(userId, annoncesId);
     }
+
 }
 
