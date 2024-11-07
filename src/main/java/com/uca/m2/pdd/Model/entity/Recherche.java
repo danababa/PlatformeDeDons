@@ -1,5 +1,6 @@
-package com.uca.m2.pdd.Model;
+package com.uca.m2.pdd.Model.entity;
 
+import com.uca.m2.pdd.Model.entity.Users;
 import jakarta.persistence.*;
 import lombok.Data;
 
