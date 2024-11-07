@@ -1,9 +1,7 @@
 package com.uca.m2.pdd.Model.dto;
 
 import com.uca.m2.pdd.util.FieldUtils;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,7 +11,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class AnnoncesDto {
+public class AnnonceDto {
     private UUID id;
 
     @NotNull
@@ -30,11 +28,13 @@ public class AnnoncesDto {
     private String datePublication;
 
     @NotNull
-    @Size(min=FieldUtils.DEFAULT_LONGITUDE_MIN_SIZE, max=FieldUtils.DEFAULT_LONGITUDE_MAX_SIZE)
+    @DecimalMin(value = "-180", inclusive = true)
+    @DecimalMax(value = "180", inclusive = true )
     private double longitude;
 
     @NotNull
-    @Size(min=FieldUtils.DEFAULT_LATITUDE_MIN_SIZE, max=FieldUtils.DEFAULT_LATITUDE_MAX_SIZE)
+    @DecimalMin(value = "-90", inclusive = true)
+    @DecimalMax(value = "90", inclusive = true )
     private double latitude;
 
     @NotNull

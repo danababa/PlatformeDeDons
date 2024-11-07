@@ -24,9 +24,10 @@ public class UserService {
     public UserDto createUser(UserDto userDto) {
 
         Users user = UserMapper.toUserEntity(userDto);
-        if (usersRepository.existsById(user.getId())) {
-            throw new IllegalArgumentException("User already exists");
-        }
+        //TODO Fix method
+//        if (usersRepository.existsById(user.getId())) {
+//            throw new IllegalArgumentException("User already exists");
+//        }
         Users savedUser = usersRepository.save(user);
         return UserMapper.toUserDto(savedUser);
     }
@@ -47,11 +48,19 @@ public class UserService {
      * @return updated user
      */
     public UserDto updateUser(UserDto userDto, UUID id) {
-        Users user = UserMapper.toUserEntity(userDto);
+        Users existingUser = UserMapper.toUserEntity(userDto);
         if (!usersRepository.existsById(id)) {
             throw new IllegalArgumentException("User not found");
         }
-        Users savedUser = usersRepository.save(user);
+        // Update fields only if they are not null in the DTO
+        if (userDto.getNom() != null) existingUser.setNom(userDto.getNom());
+        if (userDto.getPrenom() != null) existingUser.setPrenom(userDto.getPrenom());
+        if (userDto.getPassword() != null) existingUser.setPassword(userDto.getPassword());
+        if (userDto.getUsername() != null) existingUser.setUsername(userDto.getUsername());
+        if (userDto.getEmail() != null) existingUser.setEmail(userDto.getEmail());
+        if (userDto.getNumeroTelephone() != null) existingUser.setNumeroTelephone(userDto.getNumeroTelephone());
+
+        Users savedUser = usersRepository.save(existingUser);
         return UserMapper.toUserDto(savedUser);
     }
 

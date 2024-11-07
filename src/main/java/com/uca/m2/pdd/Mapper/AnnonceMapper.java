@@ -1,11 +1,11 @@
 package com.uca.m2.pdd.Mapper;
 
-import com.uca.m2.pdd.Model.dto.AnnoncesDto;
-import com.uca.m2.pdd.Model.entity.Annonces;
+import com.uca.m2.pdd.Model.dto.AnnonceDto;
+import com.uca.m2.pdd.Model.entity.Annonce;
 
-public class AnnoncesMapper {
-    public static AnnoncesDto toAnnoncesDto(Annonces entity) {
-        AnnoncesDto dto = new AnnoncesDto();
+public class AnnonceMapper {
+    public static AnnonceDto toAnnonceDto(Annonce entity) {
+        AnnonceDto dto = new AnnonceDto();
         dto.setId(entity.getId());
         dto.setTitre(entity.getTitre());
         dto.setDescription(entity.getDescription());
@@ -13,8 +13,8 @@ public class AnnoncesMapper {
         return dto;
     }
 
-    public static Annonces toAnnoncesEntity(AnnoncesDto dto) {
-        Annonces entity = new Annonces();
+    public static Annonce toAnnonceEntity(AnnonceDto dto) {
+        Annonce entity = new Annonce();
         entity.setId(dto.getId());
         entity.setTitre(dto.getTitre());
         entity.setDescription(dto.getDescription());

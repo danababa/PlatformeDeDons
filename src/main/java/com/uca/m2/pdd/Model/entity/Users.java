@@ -10,7 +10,7 @@ import java.util.UUID;
 @Table(name = "users")
 public class Users {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     @Column(name = "id",columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID id;
 

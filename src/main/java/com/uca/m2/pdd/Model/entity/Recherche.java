@@ -13,7 +13,7 @@ import java.util.UUID;
 public class Recherche {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private UUID id;
 
     @ElementCollection

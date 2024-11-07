@@ -10,9 +10,9 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "annonces")
-public class Annonces {
+public class Annonce {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     @Column(name = "id",columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID id;
 
