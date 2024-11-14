@@ -20,5 +20,5 @@ public class RechercheDto {
     private List<String> motsCles;
 
     @NotNull
-    private UserDto user;
+    private UUID userId;
 }
