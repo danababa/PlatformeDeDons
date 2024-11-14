@@ -1,5 +1,6 @@
 package com.uca.m2.pdd.Model.entity;
 
+import com.uca.m2.pdd.Model.Enum.ModeDeRemiseEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Table(name = "annonces")
 public class Annonce {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id",columnDefinition = "UUID", updatable = false, nullable = false)
     private UUID id;
 
@@ -34,8 +35,10 @@ public class Annonce {
     @Column(name = "latitude")
     private double latitude;
 
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "modeDeRemise")
-    private String modeDeRemise;
+    private ModeDeRemiseEnum modeDeRemiseEnum;
 
     @ElementCollection
     @Column(name = "motsCles")

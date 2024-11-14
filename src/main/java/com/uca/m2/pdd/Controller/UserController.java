@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -26,6 +27,26 @@ public class UserController {
         return ResponseEntity.ok().body(usersService.createUser(userDto));
     }
 
+
+    /**
+     * Login user
+     * @param username
+     * @param password
+     * @return
+     */
+    /*
+    @PostMapping("/login")
+
+    public ResponseEntity<String> login(@RequestBody @Valid String username, String password) {
+        boolean isAuthentified = usersService.login(username, password);
+        if (isAuthentified) {
+            return ResponseEntity.ok().body("User is authentified");
+        } else {
+            return ResponseEntity.badRequest().body("User is not authentified");
+        }
+    }
+     */
+
     /**
      * Get user by id
      * @param id user id
@@ -35,6 +56,16 @@ public class UserController {
     public ResponseEntity<UserDto> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok().body(usersService.getUserById(id));
     }
+
+    /**
+     * Get all users
+     * @return list of users
+     */
+    @GetMapping("")
+    public ResponseEntity<List<UserDto>>getAllUsers(){
+        return ResponseEntity.ok().body(usersService.getAllUsers());
+    }
+
     /**
      * Update user
      * @param id user id
