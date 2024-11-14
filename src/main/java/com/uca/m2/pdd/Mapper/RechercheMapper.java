@@ -14,13 +14,7 @@ public class RechercheMapper {
         RechercheDto rechercheDto = new RechercheDto();
         rechercheDto.setId(rechercheEntity.getId());
         rechercheDto.setMotsCles(rechercheEntity.getMotsCles());
-        // Map user entity to UserDto if required
-        if (rechercheEntity.getUser() != null) {
-            UserDto userDto = new UserDto();
-            userDto.setId(rechercheDto.getUser().getId());
-            // Set other fields of UserDto as needed
-            rechercheDto.setUser(userDto);
-        }
+        rechercheDto.setUserId(rechercheEntity.getUserId());
 
         return rechercheDto;
     }
@@ -33,13 +27,7 @@ public class RechercheMapper {
         Recherche rechercheEntity = new Recherche();
         rechercheEntity.setId(rechercheDto.getId());
         rechercheEntity.setMotsCles(rechercheDto.getMotsCles());
-        // Map UserDto back to User entity if required
-        if (rechercheDto.getUser() != null) {
-            Users user = new Users();
-            user.setId(rechercheDto.getUser().getId());
-            // Set other fields of Users as needed
-            rechercheEntity.setUser(user);
-        }
+        rechercheEntity.setUserId(rechercheDto.getUserId());
 
         return rechercheEntity;
     }
