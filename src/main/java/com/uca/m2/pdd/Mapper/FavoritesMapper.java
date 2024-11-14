@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class FavoritesMapper {
     // Method to convert Favorites entity to FavoritesDto
-    public FavoritesDto toFavoritesDto (Favorites favorites) {
+    public static FavoritesDto toFavoritesDto(Favorites favorites) {
         if (favorites == null) {
             return null;
         }
@@ -30,7 +30,7 @@ public class FavoritesMapper {
     }
 
     // Method to convert FavoritesDto to Favorites entity
-    public Favorites toFavoritesEntity(FavoritesDto favoritesDto) {
+    public static Favorites toFavoritesEntity(FavoritesDto favoritesDto) {
         if (favoritesDto == null) {
             return null;
         }
