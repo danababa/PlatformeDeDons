@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/Favorites")
+@RequestMapping("/favorites")
 public class FavoritesController {
     private final FavoritesService FavoritesService;
 
@@ -35,7 +35,7 @@ public class FavoritesController {
      * @param annonceId The UUID of the annonce.
      * @return The found favorite.
      */
-    @GetMapping("/{userId}/{annonceId}")
+    @GetMapping("/user/{userId}/annonce/{annonceId}")
     public ResponseEntity<FavoritesDto> getFavorite(
             @PathVariable UUID userId,
             @PathVariable UUID annonceId
@@ -65,7 +65,7 @@ public class FavoritesController {
      * @param favoritesDto The updated details for the favorite.
      * @return The updated favorite.
      */
-    @PutMapping("/{userId}/{annonceId}")
+    @PutMapping("/user/{userId}/annonce/{annonceId}")
     public ResponseEntity<FavoritesDto> updateFavorite(
             @PathVariable UUID userId,
             @PathVariable UUID annonceId,
@@ -82,7 +82,7 @@ public class FavoritesController {
      * @param annonceId The UUID of the annonce.
      * @return A response indicating the deletion was successful.
      */
-    @DeleteMapping("/{userId}/{annonceId}")
+    @DeleteMapping("/user/{userId}/annonce/{annonceId}")
     public ResponseEntity<Void> deleteFavorite(
             @PathVariable UUID userId,
             @PathVariable UUID annonceId
