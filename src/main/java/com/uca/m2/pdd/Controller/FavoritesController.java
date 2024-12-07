@@ -50,7 +50,7 @@ public class FavoritesController {
      * @param userId    The UUID of the user.
      * @return The list of favorites.
      */
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<FavoritesDto>> getFavoritesByUser(@PathVariable UUID userId) {
         List<FavoritesDto> favorites = FavoritesService.getFavoritesByUser(userId);
         return ResponseEntity.ok(favorites);
