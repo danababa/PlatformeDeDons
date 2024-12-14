@@ -22,7 +22,7 @@ public class UserController {
      * @param userDto user body
      * @return new user
      */
-    @PostMapping("")
+    @PostMapping("/register")
     public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
         return ResponseEntity.ok().body(usersService.createUser(userDto));
     }
