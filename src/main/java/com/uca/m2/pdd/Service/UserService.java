@@ -1,11 +1,11 @@
 package com.uca.m2.pdd.Service;
 
-import com.uca.m2.pdd.Exception.BadRequestException;
 import com.uca.m2.pdd.Exception.ConflictException;
 import com.uca.m2.pdd.Mapper.UserMapper;
 import com.uca.m2.pdd.Model.dto.UserDto;
 import com.uca.m2.pdd.Model.entity.Users;
 import com.uca.m2.pdd.Repository.UsersRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,12 +14,13 @@ import java.util.UUID;
 @Service
 public class UserService {
     private final UsersRepository usersRepository;
-
+    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
 
-    private UserService(UsersRepository usersRepository, UserMapper userMapper) {
+    private UserService(UsersRepository usersRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.usersRepository = usersRepository;
+        this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
     }
 
@@ -29,10 +30,11 @@ public class UserService {
      * @return new user
      */
     public UserDto createUser(UserDto userDto) {
-        if(usersRepository.findUserByUsername(userDto.getUsername()).isPresent()){
+        if (usersRepository.findByUsername(userDto.getUsername()).isPresent()) {
             throw new ConflictException("User with this username already exists");
         }
         Users user = UserMapper.toUserEntity(userDto);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         Users savedUser = usersRepository.save(user);
         return UserMapper.toUserDto(savedUser);
     }
@@ -76,14 +78,4 @@ public class UserService {
         usersRepository.deleteById(id);
     }
 
-   /**
-     * Login user
-     * @param username user username
-     * @param password user password
-     * @return true if login is successful
-     */
-    /*public boolean login(String username, String password) {
-        Users user = usersRepository.findUserByUsername(username).orElseThrow(() -> new BadRequestException("User not found"));
-        return passwordEncoder.matches(password, user.getPassword());
-    }*/
 }

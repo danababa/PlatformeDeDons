@@ -22,30 +22,11 @@ public class UserController {
      * @param userDto user body
      * @return new user
      */
-    @PostMapping("")
+    @PostMapping("/register")
     public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
         return ResponseEntity.ok().body(usersService.createUser(userDto));
     }
 
-
-    /**
-     * Login user
-     * @param username
-     * @param password
-     * @return
-     */
-    /*
-    @PostMapping("/login")
-
-    public ResponseEntity<String> login(@RequestBody @Valid String username, String password) {
-        boolean isAuthentified = usersService.login(username, password);
-        if (isAuthentified) {
-            return ResponseEntity.ok().body("User is authentified");
-        } else {
-            return ResponseEntity.badRequest().body("User is not authentified");
-        }
-    }
-     */
 
     /**
      * Get user by id
