@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Service pour gérer la logique métier liée aux notifications.
+ */
 @Service
 public class NotificationService {
 
@@ -23,7 +26,13 @@ public class NotificationService {
     private UsersRepository usersRepository; // Ajout du repository utilisateur
 
     /**
-     * Créer une notification après vérification de l'utilisateur
+     * Crée une notification après vérification de l'utilisateur.
+     * @param userId ID de l'utilisateur
+     * @param message Contenu de la notification
+     * @param type Type de la notification (ex: "Info")
+     * @param relatedId Identifiant optionnel d'une ressource liée
+     * @return La notification créée sous forme de NotificationDto
+     * @throws IllegalArgumentException si l'utilisateur n'existe pas
      */
     public NotificationDto createNotification(UUID userId, String message, String type, UUID relatedId) {
         // Vérifiez si l'utilisateur existe
@@ -41,6 +50,11 @@ public class NotificationService {
         return NotificationMapper.toNotificationDto(savedNotification);
     }
 
+    /**
+     * Récupère toutes les notifications pour un utilisateur donné.
+     * @param userId ID de l'utilisateur
+     * @return Liste de NotificationDto
+     */
     public List<NotificationDto> getNotificationsByUser(UUID userId) {
         List<Notification> notifications = notificationRepository.findAllByUserId(userId);
         return notifications.stream()
@@ -48,6 +62,11 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Récupère toutes les notifications non lues d'un utilisateur.
+     * @param userId ID de l'utilisateur
+     * @return Liste de NotificationDto non lues
+     */
     public List<NotificationDto> getUnreadNotificationsByUser(UUID userId) {
         List<Notification> unreadNotifications = notificationRepository.findAllByUserIdAndEstLuFalse(userId);
         return unreadNotifications.stream()
@@ -55,6 +74,12 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Marque une notification comme lue.
+     * @param notificationId ID de la notification
+     * @return La notification mise à jour sous forme de DTO
+     * @throws IllegalArgumentException si la notification n'est pas trouvée
+     */
     public NotificationDto markAsRead(UUID notificationId) {
         Notification notification = notificationRepository.findById(notificationId)
                 .orElseThrow(() -> new IllegalArgumentException("Notification non trouvée"));
