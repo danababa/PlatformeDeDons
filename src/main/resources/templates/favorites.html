@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Favorites</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        .favorites-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+
+        .favorite-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+
+        .favorite-item:last-child {
+            border-bottom: none;
+        }
+
+        h3 {
+            margin: 0;
+            color: #4CAF50;
+        }
+
+        p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="favorites-container">
+    <h1>Your Favorites</h1>
+    <div th:each="favorite : ${favorites}" class="favorite-item">
+        <h3 th:text="${favorite.title}">Favorite Title</h3>
+        <p th:text="${favorite.description}">Favorite Description</p>
+    </div>
+</div>
+</body>
+</html>
