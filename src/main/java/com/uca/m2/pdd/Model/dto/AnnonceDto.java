@@ -3,6 +3,7 @@ package com.uca.m2.pdd.Model.dto;
 import com.uca.m2.pdd.Model.Enum.ModeDeRemiseEnum;
 import com.uca.m2.pdd.util.FieldUtils;
 import jakarta.validation.constraints.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Data
 public class AnnonceDto {
     private UUID id;
 
@@ -45,4 +47,20 @@ public class AnnonceDto {
     @NotEmpty
     @Size(min=FieldUtils.DEFAULT_LIST_MIN_SIZE, max=FieldUtils.DEFAULT_LIST_MAX_SIZE)
     private List<String> motsCles;
+
+    public AnnonceDto(UUID id, String titre, String description, String etat, Date datePublication,
+                      double longitude, double latitude, ModeDeRemiseEnum modeDeRemise, List<String> motsCles) {
+        this.id = id;
+        this.titre = titre;
+        this.description = description;
+        this.etat = etat;
+        this.datePublication = datePublication;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.modeDeRemise = modeDeRemise;
+        this.motsCles = motsCles;
+    }
+    public AnnonceDto() {
+    }
+
 }

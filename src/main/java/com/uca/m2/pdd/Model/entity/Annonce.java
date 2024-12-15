@@ -43,4 +43,21 @@ public class Annonce {
     @ElementCollection
     @Column(name = "motsCles")
     private List<String> motsCles;
+
+    public Annonce(UUID id, String titre, String description, String etat, Date datePublication,
+                   double longitude, double latitude, ModeDeRemiseEnum modeDeRemise, List<String> motsCles) {
+        this.id = id;
+        this.titre = titre;
+        this.description = description;
+        this.etat = etat;
+        this.datePublication = datePublication;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.modeDeRemiseEnum = modeDeRemise;
+        this.motsCles = motsCles;
+    }
+
+    public Annonce() {
+    }
+
 }
