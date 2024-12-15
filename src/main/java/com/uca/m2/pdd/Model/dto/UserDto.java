@@ -12,17 +12,21 @@ import java.util.UUID;
 public class UserDto {
     private UUID id;
 
+    @NotNull
     @Size(min= FieldUtils.DEFAULT_STRING_MIN_SIZE, max=FieldUtils.DEFAULT_STRING_MAX_SIZE)
     private String username;
 
+    @NotNull
     @Size(min= FieldUtils.DEFAULT_STRING_MIN_SIZE, max=FieldUtils.DEFAULT_STRING_MAX_SIZE)
     //TODO: Add password hashing and fix pattern
     //@Pattern(regexp = FieldUtils.REGEX_PASSWORD_VALIDATION, message = FieldUtils.ERROR_MESSAGE_PASSWORD_VALIDATION)
     private String password;
 
+    @NotNull
     @Size(min= FieldUtils.DEFAULT_STRING_MIN_SIZE, max=FieldUtils.DEFAULT_STRING_MAX_SIZE)
     private String nom;
 
+    @NotNull
     @Size(min= FieldUtils.DEFAULT_STRING_MIN_SIZE, max=FieldUtils.DEFAULT_STRING_MAX_SIZE)
     private String prenom;
 

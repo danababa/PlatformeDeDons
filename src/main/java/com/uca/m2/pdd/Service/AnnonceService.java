@@ -5,57 +5,66 @@ import com.uca.m2.pdd.Mapper.AnnonceMapper;
 import com.uca.m2.pdd.Model.Enum.ModeDeRemiseEnum;
 import com.uca.m2.pdd.Model.dto.AnnonceDto;
 import com.uca.m2.pdd.Model.entity.Annonce;
+import com.uca.m2.pdd.Model.entity.Filter;
 import com.uca.m2.pdd.Repository.AnnonceRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Service pour gérer la logique métier liée aux annonces.
+ */
 @Service
 public class AnnonceService {
     private final AnnonceRepository annonceRepository;
-    private AnnonceService(AnnonceRepository annonceRepository){
+
+    public AnnonceService(AnnonceRepository annonceRepository){
         this.annonceRepository = annonceRepository;
     }
 
     /**
-     * Create a new annonce
-     * @param annonceDto body to create
-     * @return created annonce body
+     * Crée une nouvelle annonce.
+     * @param annonceDto Données de l'annonce à créer
+     * @return L'annonce créée sous forme de DTO
      */
     public AnnonceDto createAnnonce(AnnonceDto annonceDto){
-        //TODO check if annonce already exists
-//        if (annonceRepository.findByTitre(annonceDto.getTitre()).isPresent()) {
-//            throw new ResponseStatusException(HttpStatus.CONFLICT, "Annonce with this titre already exists: " + annonce.getTitre());
-//        }
         Annonce annonce = AnnonceMapper.toAnnonceEntity(annonceDto);
         Annonce savedAnnonce = annonceRepository.save(annonce);
         return AnnonceMapper.toAnnonceDto(savedAnnonce);
     }
 
     /**
-     * Get all annonces
-     * @return list of annonces
+     * Récupère toutes les annonces.
+     * @return Liste de DTO représentant toutes les annonces
      */
     public List<AnnonceDto> getAllAnnonces() {
-        return annonceRepository.findAll().stream().map(AnnonceMapper::toAnnonceDto).collect(Collectors.toList());
+        return annonceRepository.findAll().stream()
+                .map(AnnonceMapper::toAnnonceDto)
+                .collect(Collectors.toList());
     }
 
     /**
-     * Get annonce by id if it exists
-     * @param id of annonce
-     * @return annonce
+     * Récupère une annonce par son ID.
+     * @param id ID de l'annonce
+     * @return AnnonceDto correspondant
+     * @throws NotFoundException si l'annonce n'est pas trouvée
      */
     public AnnonceDto getAnnonceById(UUID id){
-        Annonce annonce = annonceRepository.findById(id).orElseThrow(()-> new NotFoundException("Annonce not found"));
+        Annonce annonce = annonceRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Annonce not found"));
         return AnnonceMapper.toAnnonceDto(annonce);
     }
 
-    //TODO update
+    /**
+     * Met à jour une annonce existante.
+     * @param annonceDto DTO contenant les nouvelles données
+     * @param id ID de l'annonce à mettre à jour
+     * @return L'annonce mise à jour sous forme de DTO
+     * @throws NotFoundException si l'annonce n'existe pas
+     */
     public AnnonceDto updateAnnonce(AnnonceDto annonceDto, UUID id) {
         Annonce existingAnnonce = annonceRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Annonce not found"));
@@ -65,22 +74,76 @@ public class AnnonceService {
         return AnnonceMapper.toAnnonceDto(savedAnnonce);
     }
 
-   public void deleteAnnonce(UUID id){
-        Annonce annonce = annonceRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("Annonce not found"));
+    /**
+     * Supprime une annonce par son ID.
+     * @param id ID de l'annonce à supprimer
+     * @throws IllegalArgumentException si l'annonce n'est pas trouvée
+     */
+    public void deleteAnnonce(UUID id){
+        Annonce annonce = annonceRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Annonce not found"));
         annonceRepository.deleteById(annonce.getId());
     }
 
     /**
-     * Get list of all annonces with a certain mode de remise
-     * @param modeDeRemise
-     * @return list of annonces Dto
+     * Récupère les annonces ayant un certain mode de remise.
+     * @param modeDeRemise Mode de remise (EN_MAIN_PROPRE ou ENVOI)
+     * @return Liste de DTO correspondant aux annonces filtrées par mode de remise
      */
     public List<AnnonceDto> findAnnonceByModeDeRemise(ModeDeRemiseEnum modeDeRemise){
-            List<Annonce> annoncesList = annonceRepository.findByModeDeRemise(modeDeRemise);
-
+        List<Annonce> annoncesList = annonceRepository.findByModeDeRemiseEnum(modeDeRemise);
         return annoncesList.stream().map(AnnonceMapper::toAnnonceDto).collect(Collectors.toList());
     }
 
+    /**
+     * Recherche des annonces en fonction de critères optionnels.
+     * @param zoneGeographique Zone géographique (optionnel)
+     * @param etat État de l'objet (optionnel)
+     * @param modeDeRemise Mode de remise sous forme de chaîne (optionnel)
+     * @param motsCles Liste de mots-clés (optionnel)
+     * @param dateDePublication Date de publication (optionnel)
+     * @return Liste d'AnnonceDto correspondant aux annonces trouvées
+     */
+    public List<AnnonceDto> searchAnnonces(String zoneGeographique, String etat, String modeDeRemise, List<String> motsCles, LocalDate dateDePublication) {
+        ModeDeRemiseEnum modeDeRemiseEnum = null;
+        if (modeDeRemise != null) {
+            try {
+                modeDeRemiseEnum = ModeDeRemiseEnum.valueOf(modeDeRemise);
+            } catch (IllegalArgumentException e) {
+                // Si le modeDeRemise ne correspond pas à une valeur de l'enum, on peut ignorer ou lever une exception.
+            }
+        }
 
+        List<Annonce> annonces = annonceRepository.searchAnnonces(
+                zoneGeographique, etat, modeDeRemiseEnum, motsCles, dateDePublication
+        );
 
+        return annonces.stream()
+                .map(AnnonceMapper::toAnnonceDto)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Récupère les annonces correspondant à un filtre enregistré.
+     * @param filter Objet Filter contenant les critères
+     * @return Liste d'entités Annonce correspondant au filtre
+     */
+    public List<Annonce> getAnnoncesByFilter(Filter filter) {
+        ModeDeRemiseEnum modeDeRemiseEnum = null;
+        if (filter.getModeDeRemise() != null) {
+            try {
+                modeDeRemiseEnum = ModeDeRemiseEnum.valueOf(filter.getModeDeRemise());
+            } catch (IllegalArgumentException e) {
+                // Gérer l'erreur si la valeur n'est pas dans l'enum
+            }
+        }
+
+        return annonceRepository.searchAnnonces(
+                filter.getZoneGeographique(),
+                filter.getEtat(),
+                modeDeRemiseEnum,
+                filter.getMotsCles(),
+                filter.getDateDePublication()
+        );
+    }
 }

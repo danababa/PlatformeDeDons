@@ -20,7 +20,6 @@ public class Recherche {
     @Column(name = "motsCles")
     private List<String> motsCles;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private Users user;
+    @Column(name = "userId")
+    private UUID userId;
 }
