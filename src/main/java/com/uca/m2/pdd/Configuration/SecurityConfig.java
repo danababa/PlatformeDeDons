@@ -1,6 +1,8 @@
 package com.uca.m2.pdd.Configuration;
 
 import com.uca.m2.pdd.util.JwtFilter;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.SessionCookieConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,17 +33,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users/register").permitAll()  // Allow registration without authentication
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()  // Allow login without authentication
+                        .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/register").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated() // All other endpoints require authentication
                 )
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Disable frame options
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // Set session creation policy
-                .exceptionHandling(exception -> exception
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)); // Set session creation policy
+                /*.exceptionHandling(exception -> exception
                         // Handle unauthenticated users
                         .authenticationEntryPoint((request, response, authException) ->
                                 response.sendRedirect("/auth/login?error=Unauthenticated")
@@ -50,7 +55,7 @@ public class SecurityConfig {
                         .accessDeniedHandler((request, response, accessDeniedException) ->
                                 response.sendRedirect("/auth/login?error=Access+Denied")
                         )
-                );
+                );*/
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Add the JWT filter
 
@@ -74,5 +79,8 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
+
 }
 

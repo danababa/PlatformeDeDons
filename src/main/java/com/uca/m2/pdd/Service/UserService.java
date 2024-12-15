@@ -30,8 +30,14 @@ public class UserService {
      * @return new user
      */
     public UserDto createUser(UserDto userDto) {
-        if (usersRepository.findByUsername(userDto.getUsername()).isPresent()) {
+        if (usersRepository.findUserByUsername(userDto.getUsername()).isPresent()) {
             throw new ConflictException("User with this username already exists");
+        }
+        if (usersRepository.findUserByEmail(userDto.getEmail()).isPresent()) {
+            throw new ConflictException("User with this email already exists");
+        }
+        if (usersRepository.findUserByNumeroTelephone(userDto.getNumeroTelephone()).isPresent()) {
+            throw new ConflictException("User with this phone number already exists");
         }
         Users user = UserMapper.toUserEntity(userDto);
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));

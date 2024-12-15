@@ -32,16 +32,16 @@ public class UserController {
      * @param id user id
      * @return user
      */
-    @GetMapping("{id}")
+ /* @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok().body(usersService.getUserById(id));
-    }
+    }*/
 
     /**
      * Get all users
      * @return list of users
      */
-    @GetMapping("")
+    @GetMapping("/all")
     public ResponseEntity<List<UserDto>>getAllUsers(){
         return ResponseEntity.ok().body(usersService.getAllUsers());
     }
@@ -52,7 +52,7 @@ public class UserController {
      * @param userDto user body
      * @return updated user
      */
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable UUID id, @RequestBody @Valid UserDto userDto) {
         return ResponseEntity.ok().body(usersService.updateUser(userDto, id));
     }
@@ -62,7 +62,7 @@ public class UserController {
      * @param id user id
      * @return deleted user
      */
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<UserDto> deleteUser(@PathVariable UUID id) {
         usersService.deleteUser(id);
         return ResponseEntity.ok().build();
