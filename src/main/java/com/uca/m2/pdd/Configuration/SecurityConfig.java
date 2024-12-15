@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -41,8 +42,13 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // Disable frame options
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // Set session creation policy
                 .exceptionHandling(exception -> exception
+                        // Handle unauthenticated users
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.sendRedirect("/auth/login?error=Unauthenticated")
+                        )
+                        // Handle access denied for authenticated users without permission
                         .accessDeniedHandler((request, response, accessDeniedException) ->
-                                response.sendRedirect("/login?error=Access+Denied")
+                                response.sendRedirect("/auth/login?error=Access+Denied")
                         )
                 );
 
@@ -54,6 +60,14 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, authException) -> {
+            // Redirect to login endpoint if user is unauthenticated
+            response.sendRedirect("/auth/login");
+        };
     }
 
     @Bean
