@@ -12,13 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class FilterServiceTest {
 
@@ -33,6 +31,7 @@ class FilterServiceTest {
 
     @Test
     void testCreateFilter_Success() {
+        // Arrange
         UUID userId = UUID.randomUUID();
         FilterDto filterDto = new FilterDto();
         filterDto.setZoneGeographique("Paris");
@@ -44,43 +43,103 @@ class FilterServiceTest {
         Filter savedFilter = new Filter();
         savedFilter.setId(UUID.randomUUID());
         savedFilter.setUserId(userId);
-        Mockito.when(filterRepository.save(Mockito.any())).thenReturn(savedFilter);
+        savedFilter.setZoneGeographique("Paris");
+        savedFilter.setEtat("Bon");
+        savedFilter.setModeDeRemise("ENVOI");
 
+        Mockito.when(filterRepository.save(Mockito.any(Filter.class))).thenReturn(savedFilter);
+
+        // Act
         FilterDto result = filterService.createFilter(userId, filterDto);
 
-        Assertions.assertNotNull(result.getId());
-        Assertions.assertEquals("Paris", result.getZoneGeographique());
+        // Assert
+        Assertions.assertNotNull(result.getId(), "Filter ID should not be null");
+        Assertions.assertEquals("Paris", result.getZoneGeographique(), "Zone géographique should match");
+        Assertions.assertEquals("Bon", result.getEtat(), "Etat should match");
+        Assertions.assertEquals("ENVOI", result.getModeDeRemise(), "Mode de remise should match");
+    }
+
+    @Test
+    void testCreateFilter_UserNotFound() {
+        // Arrange
+        UUID userId = UUID.randomUUID();
+        FilterDto filterDto = new FilterDto();
+
+        Mockito.when(usersRepository.existsById(userId)).thenReturn(false);
+
+        // Act & Assert
+        Assertions.assertThrows(IllegalArgumentException.class, () -> filterService.createFilter(userId, filterDto),
+                "Should throw IllegalArgumentException if user is not found");
     }
 
     @Test
     void testGetFiltersByUser_Success() {
+        // Arrange
         UUID userId = UUID.randomUUID();
-        List<Filter> filters = List.of(new Filter(), new Filter());
-        Mockito.when(filterRepository.findByUserId(userId)).thenReturn(filters);
+        Filter filter1 = new Filter();
+        filter1.setId(UUID.randomUUID());
+        filter1.setUserId(userId);
+        filter1.setZoneGeographique("Paris");
 
+        Filter filter2 = new Filter();
+        filter2.setId(UUID.randomUUID());
+        filter2.setUserId(userId);
+        filter2.setZoneGeographique("Lyon");
+
+        Mockito.when(filterRepository.findByUserId(userId)).thenReturn(List.of(filter1, filter2));
+
+        // Act
         List<FilterDto> result = filterService.getFiltersByUser(userId);
 
-        Assertions.assertEquals(2, result.size());
+        // Assert
+        Assertions.assertEquals(2, result.size(), "Number of filters should match");
+        Assertions.assertEquals("Paris", result.get(0).getZoneGeographique(), "First filter's zone should match");
+        Assertions.assertEquals("Lyon", result.get(1).getZoneGeographique(), "Second filter's zone should match");
     }
 
     @Test
     void testDeleteFilter_Success() {
+        // Arrange
         UUID filterId = UUID.randomUUID();
         UUID userId = UUID.randomUUID();
 
         Filter filter = new Filter();
         filter.setId(filterId);
         filter.setUserId(userId);
+
         Mockito.when(filterRepository.findById(filterId)).thenReturn(Optional.of(filter));
 
-        Assertions.assertDoesNotThrow(() -> filterService.deleteFilter(userId, filterId));
+        // Act & Assert
+        Assertions.assertDoesNotThrow(() -> filterService.deleteFilter(userId, filterId), "Should not throw any exception");
+        Mockito.verify(filterRepository, Mockito.times(1)).delete(filter);
     }
 
     @Test
     void testDeleteFilter_NotFound() {
+        // Arrange
         UUID filterId = UUID.randomUUID();
         Mockito.when(filterRepository.findById(filterId)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> filterService.deleteFilter(UUID.randomUUID(), filterId));
+        // Act & Assert
+        Assertions.assertThrows(IllegalArgumentException.class, () -> filterService.deleteFilter(UUID.randomUUID(), filterId),
+                "Should throw IllegalArgumentException if filter is not found");
+    }
+
+    @Test
+    void testDeleteFilter_UserNotOwner() {
+        // Arrange
+        UUID filterId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+        UUID otherUserId = UUID.randomUUID();
+
+        Filter filter = new Filter();
+        filter.setId(filterId);
+        filter.setUserId(otherUserId);
+
+        Mockito.when(filterRepository.findById(filterId)).thenReturn(Optional.of(filter));
+
+        // Act & Assert
+        Assertions.assertThrows(IllegalArgumentException.class, () -> filterService.deleteFilter(userId, filterId),
+                "Should throw IllegalArgumentException if user is not the owner of the filter");
     }
 }
