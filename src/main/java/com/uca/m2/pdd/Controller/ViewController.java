@@ -1,18 +1,11 @@
 package com.uca.m2.pdd.Controller;
 
-import com.uca.m2.pdd.Model.dto.UserDto;
-import com.uca.m2.pdd.Service.UserService;
-import com.uca.m2.pdd.util.JwtTokenProvider;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
+import com.uca.m2.pdd.Service.AnnonceService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class ViewController {
@@ -26,4 +19,5 @@ public class ViewController {
         model.addAttribute("username", username);
         return "dashboard";
     }
+
 }

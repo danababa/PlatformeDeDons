@@ -30,10 +30,18 @@ public class AnnonceService {
      * @param annonceDto Données de l'annonce à créer
      * @return L'annonce créée sous forme de DTO
      */
-    public AnnonceDto createAnnonce(AnnonceDto annonceDto){
-        Annonce annonce = AnnonceMapper.toAnnonceEntity(annonceDto);
-        Annonce savedAnnonce = annonceRepository.save(annonce);
-        return AnnonceMapper.toAnnonceDto(savedAnnonce);
+    public void createAnnonce(AnnonceDto annonceDto) {
+        Annonce annonce = new Annonce();
+        annonce.setTitre(annonceDto.getTitre());
+        annonce.setDescription(annonceDto.getDescription());
+        annonce.setEtat(annonceDto.getEtat());
+        annonce.setDatePublication(annonceDto.getDatePublication());
+        annonce.setLongitude(annonceDto.getLongitude());
+        annonce.setLatitude(annonceDto.getLatitude());
+        annonce.setModeDeRemiseEnum(annonceDto.getModeDeRemise());
+        annonce.setMotsCles(annonceDto.getMotsCles());
+
+        annonceRepository.save(annonce);
     }
 
     /**
@@ -41,10 +49,12 @@ public class AnnonceService {
      * @return Liste de DTO représentant toutes les annonces
      */
     public List<AnnonceDto> getAllAnnonces() {
-        return annonceRepository.findAll().stream()
-                .map(AnnonceMapper::toAnnonceDto)
-                .collect(Collectors.toList());
+            return annonceRepository.findAll()
+                    .stream()
+                    .map(AnnonceMapper::toAnnonceDto) // Assuming a mapper exists
+                    .toList();
     }
+
 
     /**
      * Récupère une annonce par son ID.
@@ -97,14 +107,13 @@ public class AnnonceService {
 
     /**
      * Recherche des annonces en fonction de critères optionnels.
-     * @param zoneGeographique Zone géographique (optionnel)
      * @param etat État de l'objet (optionnel)
      * @param modeDeRemise Mode de remise sous forme de chaîne (optionnel)
      * @param motsCles Liste de mots-clés (optionnel)
      * @param dateDePublication Date de publication (optionnel)
      * @return Liste d'AnnonceDto correspondant aux annonces trouvées
      */
-    public List<AnnonceDto> searchAnnonces(String zoneGeographique, String etat, String modeDeRemise, List<String> motsCles, LocalDate dateDePublication) {
+    public List<AnnonceDto> searchAnnonces(String etat, String modeDeRemise, List<String> motsCles, LocalDate dateDePublication) {
         ModeDeRemiseEnum modeDeRemiseEnum = null;
         if (modeDeRemise != null) {
             try {
@@ -115,7 +124,7 @@ public class AnnonceService {
         }
 
         List<Annonce> annonces = annonceRepository.searchAnnonces(
-                zoneGeographique, etat, modeDeRemiseEnum, motsCles, dateDePublication
+                etat, modeDeRemiseEnum, motsCles, dateDePublication
         );
 
         return annonces.stream()
@@ -139,7 +148,6 @@ public class AnnonceService {
         }
 
         return annonceRepository.searchAnnonces(
-                filter.getZoneGeographique(),
                 filter.getEtat(),
                 modeDeRemiseEnum,
                 filter.getMotsCles(),

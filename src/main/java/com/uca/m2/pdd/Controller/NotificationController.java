@@ -67,4 +67,9 @@ public class NotificationController {
         NotificationDto updatedNotification = notificationService.markAsRead(notificationId);
         return ResponseEntity.ok(updatedNotification);
     }
+
+    /*@GetMapping("/notifications")
+    public String showNotifications() {
+        return "notifications"; // notifications.html
+    }*/
 }

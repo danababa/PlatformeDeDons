@@ -45,4 +45,6 @@ public class AnnonceDto {
     @NotEmpty
     @Size(min=FieldUtils.DEFAULT_LIST_MIN_SIZE, max=FieldUtils.DEFAULT_LIST_MAX_SIZE)
     private List<String> motsCles;
+
+    
 }

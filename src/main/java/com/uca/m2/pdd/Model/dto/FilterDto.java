@@ -7,7 +7,6 @@ import java.util.UUID;
 public class FilterDto {
     private UUID id;
     private UUID userId; // Optionnel si vous souhaitez le set côté backend
-    private String zoneGeographique;
     private String etat;
     private String modeDeRemise;
     private List<String> motsCles;
@@ -25,12 +24,6 @@ public class FilterDto {
     }
     public void setUserId(UUID userId) {
         this.userId = userId;
-    }
-    public String getZoneGeographique() {
-        return zoneGeographique;
-    }
-    public void setZoneGeographique(String zoneGeographique) {
-        this.zoneGeographique = zoneGeographique;
     }
     public String getEtat() {
         return etat;

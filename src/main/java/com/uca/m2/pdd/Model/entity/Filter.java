@@ -20,9 +20,6 @@ public class Filter {
     private UUID userId; // Clé étrangère vers l'utilisateur
 
     @Column
-    private String zoneGeographique;
-
-    @Column
     private String etat;
 
     @Column

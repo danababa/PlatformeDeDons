@@ -10,7 +10,6 @@ public class FilterMapper {
         FilterDto dto = new FilterDto();
         dto.setId(filter.getId());
         dto.setUserId(filter.getUserId());
-        dto.setZoneGeographique(filter.getZoneGeographique());
         dto.setEtat(filter.getEtat());
         dto.setModeDeRemise(filter.getModeDeRemise());
         dto.setMotsCles(filter.getMotsCles());
@@ -24,7 +23,6 @@ public class FilterMapper {
         Filter filter = new Filter();
         filter.setId(dto.getId());
         filter.setUserId(dto.getUserId()); // userId sera défini dans le service à partir de l'URL
-        filter.setZoneGeographique(dto.getZoneGeographique());
         filter.setEtat(dto.getEtat());
         filter.setModeDeRemise(dto.getModeDeRemise());
         filter.setMotsCles(dto.getMotsCles());
@@ -33,7 +31,6 @@ public class FilterMapper {
     }
 
     public static void updateFilterEntityFromDto(FilterDto dto, Filter filter) {
-        if (dto.getZoneGeographique() != null) filter.setZoneGeographique(dto.getZoneGeographique());
         if (dto.getEtat() != null) filter.setEtat(dto.getEtat());
         if (dto.getModeDeRemise() != null) filter.setModeDeRemise(dto.getModeDeRemise());
         if (dto.getMotsCles() != null) filter.setMotsCles(dto.getMotsCles());

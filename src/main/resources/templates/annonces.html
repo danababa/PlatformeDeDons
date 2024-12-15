@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Annonces</title>
+</head>
+<body>
+<h1>Liste des Annonces</h1>
+<table border="1">
+    <tr>
+        <th>Titre</th>
+        <th>Description</th>
+        <th>État</th>
+        <th>Date de Publication</th>
+    </tr>
+    <tr th:each="annonce : ${annonces}">
+        <td th:text="${annonce.titre}"></td>
+        <td th:text="${annonce.description}"></td>
+        <td th:text="${annonce.etat}"></td>
+        <td th:text="${#dates.format(annonce.datePublication, 'yyyy-MM-dd')}"></td>
+    </tr>
+</table>
+</body>
+</html>
