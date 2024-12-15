@@ -2,40 +2,78 @@ package com.uca.m2.pdd.Controller;
 
 
 import com.uca.m2.pdd.Model.dto.UserDto;
+import com.uca.m2.pdd.Service.AuthenticationService;
 import com.uca.m2.pdd.Service.UserService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
-@RestController
+@Controller
 @RequestMapping("/users")
 public class UserController {
-    private final UserService usersService;
 
-    /**
-     * Create a new user
-     * @param userDto user body
-     * @return new user
-     */
-    @PostMapping("/register")
-    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
-        return ResponseEntity.ok().body(usersService.createUser(userDto));
+
+    private final UserService usersService;
+    private final AuthenticationService authenticationService;
+    @GetMapping("/register")
+    public String showRegisterPage() {
+        return "register";
     }
 
-
     /**
-     * Get user by id
-     * @param id user id
-     * @return user
+     * Register user
+     * @param username
+     * @param password
+     * @param nom
+     * @param prenom
+     * @param email
+     * @param numeroTelephone
+     * @param longitude
+     * @param latitude
+     * @param session
+     * @param model
+     * @return redirect to home page
      */
- /* @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable UUID id) {
-        return ResponseEntity.ok().body(usersService.getUserById(id));
-    }*/
+    @PostMapping(value = "/register")
+    public String registerUser(@RequestParam("username") String username,
+                               @RequestParam("password") String password,
+                               @RequestParam("nom") String nom,
+                               @RequestParam("prenom") String prenom,
+                               @RequestParam("email") String email,
+                               @RequestParam("numeroTelephone") String numeroTelephone,
+                               @RequestParam("longitude") double longitude,
+                               @RequestParam("latitude") double latitude,
+                               HttpSession session,
+                               Model model) {
+
+        // Validate inputs (manual validation)
+        if (username.isBlank() || password.isBlank() || nom.isBlank() || prenom.isBlank() || email.isBlank()) {
+            model.addAttribute("error", "All fields are required.");
+            return "register";
+        }
+
+        try {
+            // Register user
+            usersService.registerUser(username, password, nom, prenom, email, numeroTelephone, longitude, latitude);
+
+            // Generate JWT token and store it in the session
+            String token = authenticationService.authenticateUser(username, password);
+            session.setAttribute("jwtToken", token);
+
+            return "redirect:/dashboard"; // Redirect to home page
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            return "register"; // Reload form with error message
+        }
+    }
+
 
     /**
      * Get all users

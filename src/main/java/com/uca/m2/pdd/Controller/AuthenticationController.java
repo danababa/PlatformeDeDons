@@ -4,6 +4,7 @@ import com.uca.m2.pdd.Model.dto.UserDto;
 import com.uca.m2.pdd.Service.AuthenticationService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,12 @@ public class AuthenticationController {
 
     // POST: Handle login and set JWT in a cookie
     @PostMapping("/login")
-    public String login(@RequestBody UserDto userDto, HttpServletResponse response, Model model) {
-        String token = authenticationService.authenticateUser(userDto.getUsername(), userDto.getPassword());
+    public String login(@RequestParam("username") String username,
+                        @RequestParam("password") String password,
+                        HttpSession session,
+                        HttpServletResponse response,
+                        Model model) {
+        String token = authenticationService.authenticateUser(username, password);
 
         if (token == null) {
             model.addAttribute("error", "Invalid credentials");
@@ -41,11 +46,10 @@ public class AuthenticationController {
         jwtCookie.setMaxAge(3600);   // 1-hour expiry
 
         response.addCookie(jwtCookie); // Add the cookie to the response
-
+        session.setAttribute("jwtToken", token); // Save JWT in session
         return "redirect:/dashboard"; // Redirect to dashboard
     }
 
-    // GET: Handle logout and delete the JWT cookie
     @GetMapping("/logout")
     public String logout(HttpServletResponse response) {
         Cookie jwtCookie = new Cookie("token", null);

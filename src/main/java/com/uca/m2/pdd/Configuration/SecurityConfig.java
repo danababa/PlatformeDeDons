@@ -1,8 +1,6 @@
 package com.uca.m2.pdd.Configuration;
 
 import com.uca.m2.pdd.util.JwtFilter;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.SessionCookieConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,7 +17,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -37,11 +34,10 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/register").permitAll() // Allow access to registration page
+                        .requestMatchers(HttpMethod.GET, "/users/register").permitAll() // Allow access to registration page
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/register").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated() // All other endpoints require authentication
                 )
@@ -71,7 +67,6 @@ public class SecurityConfig {
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, authException) -> {
-            // Redirect to login endpoint if user is unauthenticated
             response.sendRedirect("/auth/login");
         };
     }

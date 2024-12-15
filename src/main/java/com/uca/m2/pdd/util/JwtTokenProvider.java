@@ -1,56 +1,77 @@
 package com.uca.m2.pdd.util;
 
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
-import io.jsonwebtoken.SignatureAlgorithm;
 
-import javax.crypto.SecretKey;
-import java.util.Date;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Base64;
 
 @Component
 public class JwtTokenProvider {
 
-    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512); // Generates a secure key
-    private final long validityInMilliseconds = 3600000; // 1 hour
+    private final String secretKey = "MySecretKey"; // Secret key to sign the JWT tokens
+    private final long validityInMilliseconds = 3600000L; // Token validity duration (1 hour)
 
-    /**
-     * Generate token
-     * @param username username
-     * @return JWT token
-     */
+    // Generate a JWT token for the user
     public String generateToken(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + validityInMilliseconds))
-                .signWith(secretKey)
-                .compact();
+        long now = System.currentTimeMillis();
+        long expiry = now + validityInMilliseconds;
+
+        // Token payload
+        String payload = "{\"sub\":\"" + username + "\",\"iat\":" + now + ",\"exp\":" + expiry + "}";
+
+        // Base64 encode the header and payload
+        String header = Base64.getEncoder().encodeToString("{\"alg\":\"HS256\",\"typ\":\"JWT\"}".getBytes());
+        String encodedPayload = Base64.getEncoder().encodeToString(payload.getBytes());
+
+        // Generate the signature (HMAC-SHA256)
+        String signature = sign(header + "." + encodedPayload, secretKey);
+
+        // Return the complete token
+        return header + "." + encodedPayload + "." + signature;
     }
 
-    /**
-     * Validate token
-     * @param token JWT token
-     * @return true if token is valid, false otherwise
-     */
+    // Validate a JWT token
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return true;
+            String[] parts = token.split("\\.");
+            if (parts.length != 3) return false;
+
+            String header = parts[0];
+            String payload = parts[1];
+            String signature = parts[2];
+
+            // Validate the signature
+            String expectedSignature = sign(header + "." + payload, secretKey);
+            if (!expectedSignature.equals(signature)) return false;
+
+            // Validate expiration
+            String decodedPayload = new String(Base64.getDecoder().decode(payload));
+            long expiry = Long.parseLong(decodedPayload.replaceAll(".*\"exp\":(\\d+).*", "$1"));
+            return expiry > System.currentTimeMillis();
         } catch (Exception e) {
-            return false; // Invalid token
+            return false;
         }
     }
 
-    /**
-     * Extract username from token
-     * @param token JWT token
-     * @return username from token
-     */
+    // Extract username from the JWT token
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
-        return claims.getSubject();
+        String[] parts = token.split("\\.");
+        if (parts.length != 3) throw new IllegalArgumentException("Invalid token");
+
+        String payload = new String(Base64.getDecoder().decode(parts[1]));
+        return payload.replaceAll(".*\"sub\":\"([^\"]+)\".*", "$1");
+    }
+
+    // Generate HMAC-SHA256 signature
+    private String sign(String data, String secret) {
+        try {
+            Mac mac = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+            mac.init(secretKeySpec);
+            return Base64.getEncoder().encodeToString(mac.doFinal(data.getBytes()));
+        } catch (Exception e) {
+            throw new RuntimeException("Error signing the token", e);
+        }
     }
 }

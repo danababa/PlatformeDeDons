@@ -1,22 +1,24 @@
 package com.uca.m2.pdd.Controller;
 
+import com.uca.m2.pdd.Model.dto.UserDto;
+import com.uca.m2.pdd.Service.UserService;
 import com.uca.m2.pdd.util.JwtTokenProvider;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 public class ViewController {
 
 
-    @GetMapping("/register")
-    public String showRegisterPage() {
-        return "register";
-    }
-    @GetMapping
+    @GetMapping("/dashboard")
     public String dashboard(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = (authentication != null) ? authentication.getName() : "Guest";

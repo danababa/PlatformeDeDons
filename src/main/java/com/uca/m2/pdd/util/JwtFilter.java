@@ -1,20 +1,21 @@
 package com.uca.m2.pdd.util;
 
+import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 @Component
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtFilter implements Filter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -22,30 +23,40 @@ public class JwtFilter extends OncePerRequestFilter {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    public void doFilter(jakarta.servlet.ServletRequest request,
+                         jakarta.servlet.ServletResponse response,
+                         FilterChain chain) throws IOException, ServletException {
 
-        String jwt = null;
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        // Extract JWT from cookies
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("token".equals(cookie.getName())) {
-                    jwt = cookie.getValue();
-                }
-            }
-        }
+        // Get JWT from session
+        HttpSession session = httpRequest.getSession(false); // Do not create a session if it doesn't exist
+        String token = (session != null) ? (String) session.getAttribute("jwtToken") : null;
 
         // Validate JWT and set SecurityContext
-        if (jwt != null && jwtTokenProvider.validateToken(jwt)) {
-            String username = jwtTokenProvider.getUsernameFromToken(jwt);
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            String username = jwtTokenProvider.getUsernameFromToken(token);
 
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(username, null, List.of());
+                    new UsernamePasswordAuthenticationToken(username, null, null); // Add authorities if needed
+
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        filterChain.doFilter(request, response);
+        chain.doFilter(request, response); // Continue the filter chain
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // No initialization required
+    }
+
+    @Override
+    public void destroy() {
+        // No cleanup required
     }
 }

@@ -26,23 +26,26 @@ public class UserService {
 
     /**
      * Create a new user
-     * @param userDto user body
      * @return new user
      */
-    public UserDto createUser(UserDto userDto) {
-        if (usersRepository.findUserByUsername(userDto.getUsername()).isPresent()) {
-            throw new ConflictException("User with this username already exists");
-        }
-        if (usersRepository.findUserByEmail(userDto.getEmail()).isPresent()) {
-            throw new ConflictException("User with this email already exists");
-        }
-        if (usersRepository.findUserByNumeroTelephone(userDto.getNumeroTelephone()).isPresent()) {
-            throw new ConflictException("User with this phone number already exists");
-        }
-        Users user = UserMapper.toUserEntity(userDto);
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        Users savedUser = usersRepository.save(user);
-        return UserMapper.toUserDto(savedUser);
+    public void registerUser(String username, String password, String nom, String prenom,
+                             String email, String numeroTelephone, double longitude, double latitude) {
+
+        usersRepository.findUserByUsername(username).ifPresent(user -> {
+            throw new ConflictException("User already exists");
+        });
+
+        Users user = new Users();
+        user.setUsername(username);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setNom(nom);
+        user.setPrenom(prenom);
+        user.setEmail(email);
+        user.setNumeroTelephone(numeroTelephone);
+        user.setLongitude(longitude);
+        user.setLatitude(latitude);
+
+        usersRepository.save(user);
     }
 
     /**
