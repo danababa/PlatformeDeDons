@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -87,5 +86,4 @@ public class UserController {
         usersService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
-
 }
