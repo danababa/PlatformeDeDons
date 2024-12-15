@@ -42,4 +42,12 @@ public class Annonce {
     @ElementCollection
     @Column(name = "motsCles")
     private List<String> motsCles;
+
+    public Annonce(UUID uuid, String s, String s1, String bon, Date date, double v, double v1, ModeDeRemiseEnum modeDeRemiseEnum, List<String> key1) {
+
+    }
+
+    public Annonce() {
+
+    }
 }

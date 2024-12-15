@@ -27,10 +27,11 @@ public class AnnonceService {
 
     /**
      * Crée une nouvelle annonce.
+     *
      * @param annonceDto Données de l'annonce à créer
      * @return L'annonce créée sous forme de DTO
      */
-    public void createAnnonce(AnnonceDto annonceDto) {
+    public AnnonceDto createAnnonce(AnnonceDto annonceDto) {
         Annonce annonce = new Annonce();
         annonce.setTitre(annonceDto.getTitre());
         annonce.setDescription(annonceDto.getDescription());
@@ -42,6 +43,7 @@ public class AnnonceService {
         annonce.setMotsCles(annonceDto.getMotsCles());
 
         annonceRepository.save(annonce);
+        return annonceDto;
     }
 
     /**

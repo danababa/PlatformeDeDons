@@ -34,7 +34,6 @@ class FilterServiceTest {
         // Arrange
         UUID userId = UUID.randomUUID();
         FilterDto filterDto = new FilterDto();
-        filterDto.setZoneGeographique("Paris");
         filterDto.setEtat("Bon");
         filterDto.setModeDeRemise("ENVOI");
 
@@ -43,7 +42,6 @@ class FilterServiceTest {
         Filter savedFilter = new Filter();
         savedFilter.setId(UUID.randomUUID());
         savedFilter.setUserId(userId);
-        savedFilter.setZoneGeographique("Paris");
         savedFilter.setEtat("Bon");
         savedFilter.setModeDeRemise("ENVOI");
 
@@ -54,7 +52,6 @@ class FilterServiceTest {
 
         // Assert
         Assertions.assertNotNull(result.getId(), "Filter ID should not be null");
-        Assertions.assertEquals("Paris", result.getZoneGeographique(), "Zone géographique should match");
         Assertions.assertEquals("Bon", result.getEtat(), "Etat should match");
         Assertions.assertEquals("ENVOI", result.getModeDeRemise(), "Mode de remise should match");
     }
@@ -79,12 +76,10 @@ class FilterServiceTest {
         Filter filter1 = new Filter();
         filter1.setId(UUID.randomUUID());
         filter1.setUserId(userId);
-        filter1.setZoneGeographique("Paris");
 
         Filter filter2 = new Filter();
         filter2.setId(UUID.randomUUID());
         filter2.setUserId(userId);
-        filter2.setZoneGeographique("Lyon");
 
         Mockito.when(filterRepository.findByUserId(userId)).thenReturn(List.of(filter1, filter2));
 
@@ -93,8 +88,6 @@ class FilterServiceTest {
 
         // Assert
         Assertions.assertEquals(2, result.size(), "Number of filters should match");
-        Assertions.assertEquals("Paris", result.get(0).getZoneGeographique(), "First filter's zone should match");
-        Assertions.assertEquals("Lyon", result.get(1).getZoneGeographique(), "Second filter's zone should match");
     }
 
     @Test

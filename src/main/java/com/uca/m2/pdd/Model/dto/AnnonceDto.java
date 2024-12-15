@@ -46,5 +46,12 @@ public class AnnonceDto {
     @Size(min=FieldUtils.DEFAULT_LIST_MIN_SIZE, max=FieldUtils.DEFAULT_LIST_MAX_SIZE)
     private List<String> motsCles;
 
-    
+
+    public <T> AnnonceDto(Object o, String newTitle, String newDescription, String neuf, Date date, double v, double v1, ModeDeRemiseEnum modeDeRemiseEnum, List<T> key1) {
+
+    }
+
+    public AnnonceDto() {
+
+    }
 }
