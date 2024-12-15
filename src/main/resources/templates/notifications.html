@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notifications Lahme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #444;
+        }
+
+        /* Form Styling */
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        textarea:focus, input[type="text"]:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .notifications-list {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .notification-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-message {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .notification-type {
+            font-size: 14px;
+            color: #888;
+            font-style: italic;
+        }
+
+        .notification-related-id {
+            font-size: 14px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+<h1>Notifications</h1>
+
+
+<h2>Existing Notifications</h2>
+<div class="notifications-list">
+
+    <div class="notification-item">
+        <div class="notification-message">Example message</div>
+        <div class="notification-type">Type: Info</div>
+        <div class="notification-related-id">Related ID: 123</div>
+    </div>
+    <div class="notification-item">
+        <div class="notification-message">Another example message</div>
+        <div class="notification-type">Type: Alert</div>
+        <div class="notification-related-id">Related ID: 456</div>
+    </div>
+</div>
+</body>
+</html>

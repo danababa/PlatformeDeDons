@@ -2,23 +2,50 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Liste des Annonces</title>
+    <title>Annonces</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-<h1>Liste des Annonces</h1>
-<table border="1">
-    <tr>
-        <th>Titre</th>
-        <th>Description</th>
-        <th>État</th>
-        <th>Date de Publication</th>
-    </tr>
-    <tr th:each="annonce : ${annonces}">
-        <td th:text="${annonce.titre}"></td>
-        <td th:text="${annonce.description}"></td>
-        <td th:text="${annonce.etat}"></td>
-        <td th:text="${#dates.format(annonce.datePublication, 'yyyy-MM-dd')}"></td>
-    </tr>
-</table>
+<main>
+    <div class="search-bar">
+        <form th:action="@{/annonces/search}" method="GET">
+            <input type="text" name="etat" placeholder="État de l'objet" th:value="${queryEtat}">
+            <input type="text" name="modeDeRemise" placeholder="Mode de remise" th:value="${queryModeDeRemise}">
+            <input type="text" name="motsCles" placeholder="Mots clés (séparés par virgule)"
+                   th:value="${queryMotsCles != null ? #strings.listJoin(queryMotsCles, ',') : ''}">
+            <input type="date" name="dateDePublication" th:value="${queryDateDePublication}">
+            <button type="submit">Rechercher</button>
+        </form>
+    </div>
+
+    <div class="annonces-list">
+        <h2>Résultats des annonces</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>État</th>
+                <th>Date de Publication</th>
+                <th>Mode de Remise</th>
+                <th>Mots Clés</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="annonce : ${annonces}">
+                <td th:text="${annonce.titre}">Titre</td>
+                <td th:text="${annonce.description}">Description</td>
+                <td th:text="${annonce.etat}">État</td>
+                <td th:text="${#dates.format(annonce.datePublication, 'yyyy-MM-dd')}">Date</td>
+                <td th:text="${annonce.modeDeRemise}">Mode</td>
+                <td th:text="${#strings.listJoin(annonce.motsCles, ', ')}">Mots Clés</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(annonces)}">
+                <td colspan="6">Aucune annonce trouvée pour ces critères.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
 </body>
 </html>

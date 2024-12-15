@@ -114,19 +114,23 @@ public class AnnonceService {
      * @return Liste d'AnnonceDto correspondant aux annonces trouvées
      */
     public List<AnnonceDto> searchAnnonces(String etat, String modeDeRemise, List<String> motsCles, LocalDate dateDePublication) {
+        // Convert modeDeRemise string to Enum safely
         ModeDeRemiseEnum modeDeRemiseEnum = null;
         if (modeDeRemise != null) {
             try {
                 modeDeRemiseEnum = ModeDeRemiseEnum.valueOf(modeDeRemise);
             } catch (IllegalArgumentException e) {
-                // Si le modeDeRemise ne correspond pas à une valeur de l'enum, on peut ignorer ou lever une exception.
+                // Log the error or handle invalid enum value gracefully
+                throw new IllegalArgumentException("Mode de remise invalide: " + modeDeRemise);
             }
         }
 
+        // Fetch annonces matching the search criteria
         List<Annonce> annonces = annonceRepository.searchAnnonces(
                 etat, modeDeRemiseEnum, motsCles, dateDePublication
         );
 
+        // Convert entities to DTOs
         return annonces.stream()
                 .map(AnnonceMapper::toAnnonceDto)
                 .collect(Collectors.toList());

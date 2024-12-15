@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Message System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    .message-form, .message-display {
+      margin-bottom: 20px;
+    }
+    .message-form textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 10px;
+    }
+    .message-display {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+      background: #f9f9f9;
+    }
+    .message {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #fff;
+    }
+    .message p {
+      margin: 0;
+    }
+    .message span {
+      display: block;
+      font-size: 0.8em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Message System</h1>
+
+  <div class="message-form">
+    <h2>Send a Message</h2>
+    <form id="messageForm">
+      <textarea id="messageContent" placeholder="Write your message here..."></textarea>
+      <input type="text" id="receiverId" placeholder="Enter Receiver ID" required>
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <div class="message-display">
+    <h2>Received Messages</h2>
+    <div id="messageList">
+    </div>
+  </div>
+</div>
+
+<script>
+  const messageForm = document.getElementById('messageForm');
+  const messageList = document.getElementById('messageList');
+
+  const messages = [
+    { content: "Hello there!", senderId: 1, timestamp: "2024-12-15 10:00 AM" },
+    { content: "How are you?", senderId: 2, timestamp: "2024-12-15 10:10 AM" }
+  ];
+
+  function loadMessages() {
+    messageList.innerHTML = '';
+    messages.forEach((message, index) => {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message';
+      messageDiv.innerHTML = `
+                <p>${message.content}</p>
+                <span>From: User ${message.senderId} | ${message.timestamp}</span>
+            `;
+      messageList.appendChild(messageDiv);
+    });
+  }
+
+  messageForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const messageContent = document.getElementById('messageContent').value;
+    const receiverId = document.getElementById('receiverId').value;
+
+    if (messageContent.trim() && receiverId.trim()) {
+      const newMessage = {
+        content: messageContent,
+        senderId: "You",
+        timestamp: new Date().toLocaleString()
+      };
+
+      messages.push(newMessage);
+      loadMessages();
+
+      messageForm.reset();
+    }
+  });
+
+  // Initial load
+  loadMessages();
+</script>
+</body>
+</html>

@@ -114,24 +114,34 @@ public class AnnonceController {
         return ResponseEntity.ok().body(annonceService.findAnnonceByModeDeRemise(modeDeRemise));
     }
 
+
     /**
-     * Effectue une recherche avancée sur les annonces en fonction de plusieurs critères optionnels.
+     * Recherche des annonces en fonction de différents critères optionnels.
      * @param etat État de l'objet (optionnel)
-     * @param modeDeRemise Mode de remise (optionnel, par ex. "EN_MAIN_PROPRE" ou "ENVOI")
+     * @param modeDeRemise Valeur de l'enum ModeDeRemiseEnum (optionnel)
      * @param motsCles Liste de mots-clés (optionnel)
-     * @param dateDePublication Date de publication à partir de laquelle l'annonce doit avoir été publiée (optionnel)
-     * @return Liste d'AnnonceDto correspondant aux critères de recherche
+     * @param dateDePublication Date de publication minimum (optionnel)
+     * @return Liste d'annonces correspondant aux critères
      */
     @GetMapping("/search")
-    public ResponseEntity<List<AnnonceDto>> searchAnnonces(
+    public String searchAnnonces(
             @RequestParam(required = false) String etat,
             @RequestParam(required = false) String modeDeRemise,
             @RequestParam(required = false) List<String> motsCles,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDePublication
-    ) {
-        List<AnnonceDto> annonces = annonceService.searchAnnonces(etat, modeDeRemise, motsCles, dateDePublication
-        );
-        return ResponseEntity.ok(annonces);
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDePublication,
+            Model model) {
+
+        // Perform search using the AnnonceService
+        List<AnnonceDto> annonces = annonceService.searchAnnonces(etat, modeDeRemise, motsCles, dateDePublication);
+
+        // Add attributes to the model to render in Thymeleaf
+        model.addAttribute("annonces", annonces);
+        model.addAttribute("queryEtat", etat); // Preserve user input
+        model.addAttribute("queryModeDeRemise", modeDeRemise);
+        model.addAttribute("queryMotsCles", motsCles);
+        model.addAttribute("queryDateDePublication", dateDePublication);
+
+        return "annonces"; // Return to the annonces.html template
     }
 
  }

@@ -1,147 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accueil</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-        }
-
-        header {
-            background-color: #6200ea;
-            color: white;
-            padding: 10px 20px;
-            text-align: center;
-        }
-
-        main {
-            padding: 20px;
-        }
-
-        .buttons {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .buttons button {
-            background-color: #6200ea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .buttons button:hover {
-            background-color: #3700b3;
-        }
-
-        .search-bar {
-            margin-top: 30px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .search-bar input[type="text"] {
-            width: 70%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .search-bar button {
-            background-color: #03dac5;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .search-bar button:hover {
-            background-color: #018786;
-        }
-
-        .filters {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .filters h3 {
-            margin-bottom: 10px;
-        }
-
-        .filters input[type="text"] {
-            padding: 10px;
-            width: 100%;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .filters button {
-            background-color: #6200ea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .filters button:hover {
-            background-color: #3700b3;
-        }
-    </style>
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-<header>
-    <h1>Bienvenue sur le tableau de bord</h1>
-</header>
-<main>
-    <!-- Buttons Section -->
-    <div class="buttons">
-        <button th:onclick="|window.location.href='@{/annonces}'|">Voir les annonces</button>
-        <button th:onclick="|window.location.href='@{/messagerie}'|">Messagerie</button>
-        <button th:onclick="|window.location.href='@{/notifications}'|">Notifications</button>
-        <button th:onclick="|window.location.href='@{/annonces/create}'|">Créer une Annonce</button>
+<h1>Bienvenue sur le tableau de bord</h1>
+
+
+<div class="buttons">
+    <button onclick="window.location.href='/annonces'">Voir les annonces</button>
+    <button onclick="window.location.href='/messages'">Messagerie</button>
+    <button onclick="window.location.href='/notifications'">Notifications</button>
+    <button onclick="window.location.href='/annonces/create'">Créer une Annonce</button>
+</div>
+
+
+<div class="search-bar">
+    <form th:action="@{/dashboard/annonces/search}" method="GET">
+        <input type="text" name="etat" placeholder="État de l'objet" th:value="${queryEtat}">
+        <input type="text" name="modeDeRemise" placeholder="Mode de remise" th:value="${queryModeDeRemise}">
+        <input type="text" name="motsCles" placeholder="Mots clés (séparés par virgule)" th:value="${queryMotsCles}">
+        <input type="date" name="dateDePublication" th:value="${queryDateDePublication}">
+        <button type="submit">Rechercher</button>
+    </form>
+</div>
+
+
+<div class="search-results" th:if="${annonces != null and !annonces.isEmpty()}">
+    <h2>Résultats de la recherche</h2>
+    <div th:each="annonce : ${annonces}" class="result-item">
+        <h3 th:text="${annonce.titre}">Titre de l'annonce</h3>
+        <p th:text="'Description: ' + ${annonce.description}">Description</p>
+        <p th:text="'État: ' + ${annonce.etat}">État</p>
+        <p th:text="'Mode de Remise: ' + ${annonce.modeDeRemise}">Mode de Remise</p>
+        <p th:text="'Date de Publication: ' + ${#dates.format(annonce.datePublication, 'yyyy-MM-dd')}">Date</p>
     </div>
+</div>
+<div class="search-results" th:if="${annonces == null or annonces.isEmpty()}">
+    <h2>Aucun résultat trouvé</h2>
+</div>
 
-    <!-- Search Bar -->
-    <div class="search-bar">
-        <form th:action="@{/annonces/search}" method="GET">
-            <input type="text" name="query" placeholder="Rechercher des annonces..." th:value="${query}">
-            <button type="submit">Rechercher</button>
-        </form>
-    </div>
 
-    <!-- Filters Section -->
-    <div class="filters">
-        <h3>Filtres</h3>
-        <form th:action="@{/annonces/filter}" method="GET">
-
-            <label for="etat">État :</label>
-            <input type="text" id="etat" name="etat" placeholder="Entrez l'état de l'objet" th:value="${etat}">
-
-            <label for="mode">Mode de remise :</label>
-            <input type="text" id="mode" name="mode" placeholder="Mode de remise (ex: ENVOI)" th:value="${mode}">
-
-            <button type="submit">Appliquer les filtres</button>
-        </form>
-    </div>
-</main>
-
+<div class="footer">
+    &copy; 2024 Tableau de bord Lahme
+</div>
 </body>
 </html>
-
