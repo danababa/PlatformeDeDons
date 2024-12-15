@@ -35,7 +35,6 @@ public class Annonce {
     @Column(name = "latitude")
     private double latitude;
 
-
     @Enumerated(EnumType.STRING)
     @Column(name = "modeDeRemise")
     private ModeDeRemiseEnum modeDeRemiseEnum;
