@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ViewController {
 
 
-    @GetMapping("/users/register")
+    @GetMapping("/register")
     public String showRegisterPage() {
         return "register";
     }
